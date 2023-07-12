@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="files/styles.css">
+    <link type="text/javascript" href="files/color.js">
+    <link type="text/javascript" href="files/lang.js">
+
+    <title>
+      Handmade print images menu
+    </title>
+  </head>
+
+<body >
+  <div class=""></div>
+  <h2 id="mainTitle">Handmade print images menu</h2>
+    <div class="printerMenu box">
+      <form action="">
+      </form>
+        <div class="switchModeBtn btn weightBtn" id="switchModeBtn" >Dark Mode</div>
+        <div class="switchLangBtn btn weightBtn" id="switchLangBtn" >Language</div>
+        <div class="languageSelector" id="languageSelector" >
+          <ul>
+            <li onclick="switchLang('esp', 0)">Español</li>
+            <li onclick="switchLang('eng', 0)">English</li>
+            <li>Other</li>
+            <li><div class="DisplayNoneBtn btn " id="DisplayNoneBtn"  >Done</div></li>
+          </ul><br>
+          
+        </div>
+        <div class="paperSize">
+          <span id="pS">Paper Size  </span>
+          <select name="paperSizes" id="paperSizes" onchange="setPaperSize(this)">
+            <option value="A3">A3</option>
+            <option value="A4">A4</option>
+            <option value="Folio" id="folio">Folio</option>
+            <option value="Carta" id="carta">Carta</option>
+          </select>
+        </div>
+
+        <div class="StretchBtn btn weightBtn" id="StretchBtn">Stretch  </div>
+        <div class="circuloBtn btn weightBtn" id="circuloBtn">Circulo</div>
+        <div class="bordeBtn btn weightBtn" id="bordeBtn" onclick="showBdrCtr()">Borde</div>
+        <div class="colorPickers " >
+        <form>
+          R: <input type="range" min="0" max="255" value="1" class="slider" id="sliderR" onchange="setBorder(2)"><br>
+          G: <input type="range" min="0" max="255" value="1" class="slider" id="sliderG" onchange="setBorder(2)"><br>
+          B: <input type="range" min="0" max="255" value="1" class="slider" id="sliderB" onchange="setBorder(2)"><br>
+          L: <input type="range" min="0" max="10" value="1" class="slider" id="sliderS" onchange="setBorder(2)"><br>
+          <div class="simpleText" id="targetColor"></div>
+
+          </form>
+        </div>
+    </div>
+
+
+
+  <div class="container box">
+    <div class="lMenu box" id="lMenu">
+      <div class="DragAndDrop box Page" id="DragAndDrop">
+        <span class="welcomeText" id="welcomeText">
+          
+          Drag and Drop your files here<br>or<br>Click to upload
+        </span>
+        <input type="file" name="myFile" id="" class="DragZone-input" multiple>
+      </div>
+      <div class="subMenu box" id="subMenu">
+        <div class="subMText">
+          <span id="pagt01">Pagina</span>
+          <span class="pagCounter" id="pagActual">#</span>
+           <span id="pagt02">de</span>
+            <span class="pagTotal" id="cantPags">##</span>  
+          
+        </div>
+          <div class="dirAdRev prev cir btn "><<</div>
+          <div class="dirAdRev next cir btn ">>></div>
+          <div class="weightBtn print box btn" id="printBtn"><span>Print</span></div>
+          <div class="weightBtn zoom box btn" id="zoomBtn"><span>Zoom In</span></div>
+        </div>
+    </div>
+    <div class="rMenu box">
+      <h3 id="picSize">Picture Size </h3>
+        <div class="sizes box btn" id="btn1">Page</div>
+        <div class="sizes box btn" >20 x 25</div>
+        <div class="sizes box btn">13 x 18</div>
+        <div class="sizes box btn">15 x 10</div>
+        <div class="sizes box btn">13 x 9</div>
+        <div class="sizes box btn">8 x 6</div>
+        <div class="customSize sizes btn" id="CustomSize" >
+          <input type="text" id="cWidth" name="cWidth" class="inpTxt">
+          <span> x </span>
+          <input type="text" id="cHeight" name="cHeight"class="inpTxt">
+        </div>
+
+       
+    </div>
+  </div>
+  <div class="smallImgs box" id="smallImgs">
+    <div class="goL box btn" onclick="goLorR('L')"><</div>
+    <div class="goR box btn" onclick="goLorR('R')">></div>
+  </div>  
+  <div class="imgToPrint" id="imgToPrint">
+    
+  </div>
+  <div style="display: none" class="hideMe">
+      <button onclick="f()">
+         Click Me To Get Student Details
+      </button>
+      <p id="text" style="color:purple; font-weight:bold;font-size:20px;">
+      </p>
+    </div>
+
+  
+  <script>
+    function f() {
+            var name = Student.name;
+            var age = Student.age;
+            var dept = Student.dept;
+            var score = Student.score;
+ 
+            var str = "Name:" + name + "\nAge: "
+                + age + "\nDepartment:" + dept
+                + "\nScore: " + score;
+ 
+            document.getElementById(
+                'text').innerHTML = str;
+        }
+    // Create a function for getting a variable value
+    function setVar(setvari, setVal) {
+
+      //console.log("setvari: " + setvari + ", setVal: " + setVal);
+      
+      // Get the root element
+      var r = document.querySelector(':root'); // root is the entire page
+      //console.log (r);
+      // Get the styles (properties and values) for the root
+      var rs = getComputedStyle(r);
+      //console.log ("rs: ");
+      //console.log ( rs );
+      // Alert the value of the --clrBorder variable
+      //alert("The value of --clrBorder is: " + rs.getPropertyValue('--clrBorder'));
+        r.style.setProperty(setvari, setVal);
+    }
+    /*
+      --gralW: 100px;
+      --gralH: var(--gralW);
+      --clr: #191919;
+      --clrBorder: 2px solid black;
+      --pageBorder: 2px solid black;
+      --clrbtn: rgb(50 50 50);
+      --grlPadding: 5px;
+      --menuH: 300px;
+    */
+  
+  
+  
+    var testCssVar = "<style> .testGrid2{} </style>";
+    var w = window.screen.width;
+    var link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    //link.innerHTML= testCssVar;
+    document.head.appendChild(link);
+    //document.head.appendChild(testCssVar);
+  
+    
+    let arrayOfImages = [];
+    let arrayOfImages2 = []; //['id', 'stretch', 'circle', 'rotation', 'border'];
+    let arrayState = []
+    let arrayOfImagesToPrint = [];
+    let imgPorPages = 1;
+    let startFrom = 0;
+    let stlDiv = "";
+    let gralWidth = 0;
+    let gralHeight = 0;
+    let spaceBetweenW = 2;
+    let spaceBetweenH = 2;
+    let unitSize = "px";
+    let borderOn = false;
+    let borderColor = "rgb\(0,0,0\)"
+    let circleOn = false;
+    let stretchImgs = false;
+    let reloadPage = false;
+    let pressMode = 2;
+    let currentLang = "esp";
+
+    document.getElementById("printBtn").addEventListener("click", PrintDiv);
+    document.getElementById("StretchBtn").addEventListener("click", setStretch);
+    document.getElementById("circuloBtn").addEventListener("click", setCirculo);
+    document.getElementById("zoomBtn").addEventListener("click", setZoom);
+    document.getElementById("switchModeBtn").addEventListener("click", switchMode);
+    document.getElementById("switchLangBtn").addEventListener("click", switchLang);
+    //document.getElementById("languageSelector").addEventListener("click", languageSelector);
+    document.getElementById("DisplayNoneBtn").addEventListener("click", hideLan);
+    
+    setBorder(0);
+    switchLang(currentLang, 'nope');
+  
+  
+    
+    document.querySelectorAll(".dirAdRev").forEach(btn => {
+      btn.addEventListener("click", moveFck);
+    });
+    
+    document.onkeydown = function (e) {
+      if (e.ctrlKey && e.keyCode == 80 ) {
+        e.preventDefault();
+        console.log("Ctrl+P shortcut detected");
+        document.getElementById("printBtn").click();
+      
+      }
+    };
+    
+    document.querySelectorAll(".DragZone-input").forEach(inputElement => {
+      const dropZoneElement = inputElement.closest(".DragAndDrop");
+      //click funtionality to open or select files
+      dropZoneElement.addEventListener("click", e => {
+        if (document.getElementById("welcomeText")) {
+          inputElement.click();
+        };
+      });
+      
+      inputElement.addEventListener("change", e => {
+        if (inputElement.files.length) {
+          hideWelcomeText();
+          //updateThumbnail(dropZoneElement, inputElement.files[0]); // unused atm
+          for (let i = inputElement.files.length - 1; i>=0 ; i--) {
+            loadArray(inputElement.files[i]);
+            calcPages(arrayOfImages.length);
+          }
+        };
+      });
+
+      dropZoneElement.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZoneElement.classList.add("DragAndDrop--over");
+      });
+      
+      // set the border to original after leaving the drop zone
+      ["dragleave", "dragend"].forEach((type) => {
+        dropZoneElement.addEventListener(type, (e) => {
+          dropZoneElement.classList.remove("DragAndDrop--over"); 
+        });
+      });
+      dropZoneElement.addEventListener("drop", e => {
+      e.preventDefault();
+        //console.log(e.dataTransfer.files);
+        if (e.dataTransfer.files.length) {
+          for (let i = 0; i < e.dataTransfer.files.length ; i++) {
+            if (e.dataTransfer.files[i].type.startsWith("image/")) {
+              loadArray(e.dataTransfer.files[i], i);
+              
+            };
+          }
+        };
+        dropZoneElement.classList.remove("DragAndDrop--over");
+        if (!document.getElementById("welcomeText")) {
+          //imgPorPages = arrayOfImages.length ;
+          //console.log("imgPorPages: " + imgPorPages);
+          DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+        }
+
+      });
+      
+    }); // end of drag and drop function
+    
+    function loadArray(file, a) {
+      let arrayTemp = [];
+      arrayTemp[0] = a;
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => { 
+          let img = document.createElement("img");
+          let img2 = document.createElement("img");
+          img2.src = reader.result;
+          img.src = reader.result;
+          arrayOfImages.push(img);
+          /* // pendiente de uso
+          let img3 = document.createElement("img");
+          img3.src = reader.result;
+          arrayTemp[1] = img3;
+          arrayOfImages2.push(arrayTemp);
+          */
+          //show images array in sub menu
+          img2.style = "width: 50px; height: 90%; border-radius: 5%;";
+          img2.classList.add("refImg");
+          img2.setAttribute('id', arrayOfImages.length);
+                                                // ['id', 'stretch', 'circle', 'rotation', 'border'];
+          arrayOfImages2.push([(arrayOfImages.length - 1), false, false, 0, ""]);
+          img2.addEventListener("click", setLink);
+          document.getElementById("smallImgs").appendChild(img2);
+          if (!document.querySelector(".pagePic")) {
+            hideWelcomeText();
+            DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+            calcPages(arrayOfImages.length);
+          }
+        };
+      } 
+      
+    } // enf of loadArray
+    
+    function DisplayPageToPrint(startFrom, cant, stlDiv) {
+      //console.log(" Display - stlDiv: " + stlDiv);
+      let pag = document.getElementById("paperSizes");
+      let inserDiv = true;
+      let cargarPagImpress = false;
+      if (stlDiv == "imgToPrint") {
+        cargarPagImpress = true;
+        let cl = document.getElementById("DragAndDrop").classList[1];
+        //console.log(cl + ", imgPerPage: " + imgPorPages);
+        document.getElementById("imgToPrint").classList.add(cl);
+      }
+      
+      if (!cant) {
+        imgPorPages = 1;
+      } else {
+        imgPorPages = cant;
+      }
+      if (!startFrom || startFrom < 0 || startFrom > (arrayOfImages.length - 1)) {
+        startFrom = 0;
+      }
+      const list = document.querySelectorAll(".pagePic");
+      for (const element of list) {
+        element.remove();
+      }
+      
+      let contPosC = 0;
+      let contPosR = 0;
+      let imgPW = 0;
+      //Page
+      if (gralWidth <= 0 || document.getElementById("DragAndDrop").classList.contains("Page"))  {
+        gralWidth = Math.floor(document.getElementById("DragAndDrop").style.width.match(/\d+/) ) - 10;
+      }
+      if (gralHeight <= 0 || document.getElementById("DragAndDrop").classList.contains("Page")) {
+        gralHeight = Math.floor(document.getElementById("DragAndDrop").style.height.match(/\d+/)) - 10;
+      }
+      calcIPP();
+      let result = calcIPP();
+      imgPW = result[0];
+      
+      for(let i = startFrom; i < (startFrom + imgPorPages); i++) {
+        
+        if (arrayOfImages.length > 0 && arrayOfImages[i] != null) {
+          let sentence; 
+          //console.log("DisplayPageToPrint: " + startFrom + " , " + imgPorPages);
+          let newDiv = document.createElement("DIV");
+          newDiv.classList.add("pagePic");
+          
+          let img = document.createElement("img");
+          img.src = arrayOfImages[i].src;
+          
+          newDiv.id = i;
+          sentence = ' width: ' + gralWidth + unitSize + ';';
+          sentence += ' height: ' + gralHeight + unitSize + ';';
+          /*
+          newDiv.style.width = gralWidth + unitSize;
+          newDiv.style.height = gralHeight + unitSize;
+          */
+          
+          if ( imgPorPages == 2 && result[0] != 2) {
+            //newDiv.style.transform = 'rotate(90deg)';
+            if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
+              sentence = ' width: ' + gralWidth + unitSize + ';';
+              sentence += ' height: ' + gralHeight + unitSize + ';';
+              img.style = "transform: rotate(90deg); width: " + gralHeight + unitSize + "; height: " + gralWidth + unitSize + ";";
+            } else {
+              sentence += ' width: ' + gralHeight + unitSize + ';';
+              sentence += ' height: ' + gralWidth + unitSize + ';';
+              img.style = "transform: rotate(90deg); width: " + gralWidth + unitSize + "; height: " + gralHeight + unitSize + ";";
+            }
+          } else {
+            img.style.width = gralWidth + unitSize;
+            img.style.height = gralHeight + unitSize;
+          }
+          //console.log('1rs sentence: ' + sentence);
+          
+          newDiv.appendChild(img);
+          //if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
+            newDiv.classList.add("gridClassCustom");
+            //let result = calcIPP();
+
+            let checkW = (spaceBetweenW * contPosC ) + (gralWidth * contPosC) + ( gralWidth * 1 );
+            let pW = document.getElementById("DragAndDrop").style.width.match(/\d+/);
+
+            if (checkW >= pW ) {
+              //console.log(document.getElementById("DragAndDrop").style.width);
+              //console.log("checkW. " + checkW + " is greater than DragAndDrop width: " + pW);
+              contPosC = 0;
+              contPosR = contPosR + 1;
+            } 
+            let checkH = (spaceBetweenH * contPosR ) + (gralHeight * contPosR) + (gralHeight * 1);
+            let pH = document.getElementById("DragAndDrop").style.height.match(/\d+/);
+            if (checkH >= pH) {
+              imgPorPages = i;
+              inserDiv = false;
+              console.log("checkH: " + checkH + " is greater than DragAndDrop height: " + pH);
+            }
+            if (inserDiv == true) {
+              sentence += ' left: ' + Math.floor((spaceBetweenW * (contPosC + 1) ) + (gralWidth * contPosC)) + unitSize + '; ';
+              sentence += ' top: ' + Math.floor((spaceBetweenH * (contPosR + 1) ) + (gralHeight * contPosR)) + unitSize + '; ';
+              if (Math.floor(arrayOfImages2[i][3]) != 0) {
+                sentence += ' transform: rotate(' + Math.floor(arrayOfImages2[i][3]) + 'deg);'; 
+                newDiv.classList.add(arrayOfImages2[i][3]);
+                
+              };
+              if (arrayOfImages2[i][2] == true) {
+                newDiv.classList.add("cir");
+              };
+              
+              if (arrayOfImages2[i][4].length > 5 ) {
+                sentence += ' border: ' + arrayOfImages2[i][4] + ';';
+                newDiv.classList.add("borde");
+                //document.querySelector(".colorPickers").classList.("displayOn");
+                
+              };
+              if (imgPorPages == 1 && arrayOfImages2[i][4].length == 0) {
+                if (document.querySelector(".colorPickers").classList.contains("displayOn") ) {
+                  document.querySelector(".colorPickers").classList.remove("displayOn");
+                };
+              };
+              //console.log('final sentence: ' + sentence);
+              newDiv.style = sentence;
+              //console.log("left: " + newDiv.style.left + ", top: " + newDiv.style.top);
+            }
+            if (contPosC < imgPW) { 
+              contPosC = contPosC + 1;
+            } 
+          //}
+          if (inserDiv == true) {
+            document.querySelector(".DragAndDrop").appendChild(newDiv);
+          } else {
+            console.log("inserDiv: " + inserDiv);
+            return false;
+          }
+          if (cargarPagImpress == true) {
+            document.getElementById("imgToPrint").appendChild(newDiv);
+          }
+        }
+      }
+           
+      if (stretchImgs == true) {
+        document.getElementById("StretchBtn").click();
+      };
+      /*
+      if (borderOn ==  true) {
+        setBorder(0);
+        //document.getElementById("bordeBtn").click();
+      };
+      */
+      
+      addRotation();
+    } // end of DisplayPageToPrint
+    
+    function addRotation() {
+      const element = document.querySelectorAll(".pagePic").forEach( e => {
+        e.addEventListener("click", Rotation);
+      });
+      //const element3 = document.querySelector(".DragAndDrop");
+      //element3.addEventListener("click", Rotation);
+      const element2 = document.querySelectorAll(".refImg").forEach( e => {
+        e.addEventListener("click", setLink);
+      });
+    } // end of addRotation
+    
+    function hideWelcomeText() {
+      if (arrayOfImages.length > 0 ) {
+        if (document.getElementById("welcomeText")) {
+          document.getElementById("welcomeText").remove();
+          let pag = document.getElementById("paperSizes");
+          setPaperSize(pag);
+
+          //const hide = document.getElementById("welcomeText");
+          //console.log(hide);
+          //hide.style = "Display: none;";
+        }
+      }
+    };  // end of hideWelcomeText
+    
+    function calcPages(e) {
+      if (e == 0) {
+        e = 1;
+      };
+      let cant =  arrayOfImages.length / e;
+      if (cant <= 1) {
+        cant =  arrayOfImages.length;
+      }
+      cant = Math.ceil(cant);
+      document.getElementById("cantPags").innerText = cant;
+    } // end of calcPages
+    
+    function PrintDiv() {
+      if (!arrayOfImages.length ) {
+        return;
+      }
+      //document.body.removeChild(frame1);
+      let title = "title";
+      let Ts =  unitSize;
+      unitSize = "mm";
+      DisplayPageToPrint(startFrom, imgPorPages, "imgToPrint");
+      let contents = document.getElementById("imgToPrint").innerHTML;
+      
+      let frame1 = document.createElement('iframe');
+      frame1.name = "frame1";
+      frame1.style.position = "absolute";
+      let secundaryClass = document.getElementById("imgToPrint").classList[1];
+      //console.log("SC: " + secundaryClass);
+      
+      //lots of shiet here, it should be simplify
+      let styles001 = 'style=\" width: 98%; height: 98%; justify-content: center; ';
+      let styles002 = "";
+      let bodyStyle = 'style=\"display: flex; position: relative; margin: 0; padding: 0;\"'; //justify-content: center; align-content: center;\"';
+      
+      if (secundaryClass == "testGrid") {
+        styles002 = ' .gridClassCustom \{ position: absolute;  \}';
+      } 
+      if (imgPorPages == 1 || secundaryClass == "") {
+        styles002 = ' .grid \{ display: flex; justify-content: center; align-items: center; \} .pagePic \{ position: relative;\}';
+        styles001 += ' align-items: center; ';
+      } else if (imgPorPages >= 2 && imgPorPages < 9) {
+        styles002 = ' .gridClassCustom \{ position: absolute;  display: flex; justify-content: center; align-items: center; \}';
+      }
+      //console.log("st01: " + styles001);
+      
+     if ( borderOn == true) {
+       styles002 += ' .borde \{border:' + borderColor + ';\}';
+     }
+    
+     
+     styles002 += ' .cir \{border-radius: 50%; overflow: hidden;\}';
+     
+     
+    
+      
+      const page = document.getElementById("DragAndDrop");
+      
+      let cantW = page.style.width.match(/\d+/);
+      let cantH = page.style.height.match(/\d+/);
+      
+      frame1.style.width = cantW + unitSize;
+      frame1.style.height = cantH + unitSize;
+      frame1.id = "remove"; // uN-comment for debuging ----------
+      frame1.classList.add(document.getElementById("imgToPrint").classList[1]);
+      //frame1.style.top = "1000000px";  // comment for debuging ----------
+      document.body.appendChild(frame1);
+      let frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
+      frameDoc.document.open();
+      frameDoc.document.write(`<!DOCTYPE html><html><head><title>${title}</title>`);
+      frameDoc.document.write('</head><body width=\"' + cantW + 'mm\" height=\"' + cantH + 'mm\" ' + bodyStyle + ' >');
+      frameDoc.document.write('<div class=\"grid\" ' + styles001 + '\"  >');
+      frameDoc.document.write(contents);
+      frameDoc.document.write('</div><style>' + styles002 + ' </style>');
+      frameDoc.document.write('</body></html>');
+      frameDoc.document.close();
+      setTimeout(function () {
+          window.frames["frame1"].focus();
+          
+          //var win = window.open();
+          //win.document.write["frame1"];
+          
+          window.frames["frame1"].print();
+          //document.body.removeChild(frame1); // comment for debuging ----------
+      }, 500);
+      unitSize = Ts;
+      stlDiv = "";
+      DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+      document.body.addEventListener('click', removeFrames);  // uN-comment for debuging ----------
+      return false;
+      
+    } // end of function PrintDiv
+    
+    
+    
+    
+    function removeFrames() { 
+      if (reloadPage == true && window.frames.length > 0) {
+          document.getElementById("remove").remove();
+          reloadPage = false;
+          document.body.removeEventListener('click', removeFrames);
+      } else {
+        reloadPage = true;
+      }
+    }
+
+    
+    function moveFck() {
+      //console.log("startFrom: " + startFrom);
+      let btn = this;
+      let stopMF = arrayOfImages.length;
+      //console.log(stopMF);
+      if (startFrom < 0 || startFrom > stopMF) {
+          startFrom = 0;
+      }
+      //console.log(startFrom);
+      let cant = 1;
+      if (btn.innerText == ">>") {
+        startFrom = imgPorPages + startFrom;
+      } else if (btn.innerText == "<<") {
+        cant = -1;
+        startFrom = startFrom - imgPorPages;
+      }
+      hideWelcomeText();
+      DisplayPageToPrint(startFrom, imgPorPages, stlDiv)
+      calcPages(imgPorPages);
+    };
+    
+    const sizeBtns = document.querySelectorAll(".sizes").forEach(btn => {
+      let insertCant = 1;
+      btn.onclick = function () {
+      if (arrayOfImages.length > 0) {
+        document.getElementById("DragAndDrop").classList.remove("gridClass2x2");
+        document.getElementById("DragAndDrop").classList.remove("gridClass3x3");
+        document.getElementById("DragAndDrop").classList.remove("gridClass2");
+        document.getElementById("DragAndDrop").classList.remove("gridClassCustom");
+        document.getElementById("DragAndDrop").classList.remove("testGrid");
+        document.getElementById("DragAndDrop").classList.remove("box");
+        document.getElementById("DragAndDrop").classList.remove("Page");
+        unitSize = "px";
+        if (btn.innerHTML == "Page") {
+            document.getElementById("DragAndDrop").classList.add("Page");
+            unitSize = "px";
+            imgPorPages = 1;
+          } else if (btn.innerHTML == "20 x 25") {
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            gralWidth = "200";
+            gralHeight = "250";
+            imgPorPages = 1;
+          } else if (btn.innerHTML == "13 x 18") {
+            gralWidth = 180;
+            gralHeight = 130;
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            //document.getElementById("DragAndDrop").classList.add("gridClass2");
+            imgPorPages = 2;
+          } else if (btn.innerHTML == "15 x 10") {
+            gralWidth = 150;
+            gralHeight = 100;
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            //document.getElementById("DragAndDrop").classList.add("gridClass2");
+            imgPorPages = 2;
+          } else if (btn.innerHTML == "13 x 9") {
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            //document.getElementById("DragAndDrop").classList.add("gridClass2x2");
+            gralWidth = 90;
+            gralHeight = 130;
+            imgPorPages = 4;
+          } else if (btn.innerHTML == "8 x 6") {
+            //document.getElementById("DragAndDrop").classList.add("gridClass3x3");
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            gralWidth = 60;
+            gralHeight = 83;
+            imgPorPages = 9;
+          } else if (btn.id == "CustomSize") {
+            //document.getElementById("DragAndDrop").classList.add("gridClassCustom");
+            document.getElementById("DragAndDrop").classList.add("testGrid");
+            let cWidth = document.getElementById("cWidth").value;
+            let cHeight = document.getElementById("cHeight").value;
+            if (cWidth > 0) {
+              gralWidth = cWidth ;
+            }
+            if (cHeight > 0) {
+              gralHeight = cHeight;
+            }
+          }
+          hideWelcomeText();
+          DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+          calcPages(imgPorPages);
+        }
+      }
+    });
+    
+    
+    function Rotation() {
+      let rot = 90;
+      if (rot > 359 || rot < 1) {
+        rot = 90;
+      }
+      let element = this;
+      //console.log(element);
+      let addSentence = "";
+        
+      if (element.classList.contains("gridClassCustom")) {
+        let tX = Math.floor(element.style.left.match(/\d+/));
+        let tY = Math.floor(element.style.top.match(/\d+/));
+        //console.log(", addSentence: " + addSentence + "cpx: " + cPX + ", cpy: " + cPY +  ", tX: " + tX + ", tY: " + tY);
+        //element.style.transform = (translate);
+      }
+      const style = element.style;
+      element.classList.remove(0);
+      if (element.classList.contains(90)) {
+        element.classList.remove(90);
+        rot = 180;
+      } else if (element.classList.contains(180)) {
+        element.classList.remove(180);
+        rot = 270;
+      } else if (element.classList.contains(270) ) {
+        element.classList.remove(270);
+        rot = 360;
+      } 
+      element.classList.add(rot);
+      //console.log(element.style);
+      let posX = element.style.left;
+      let posY = element.style.top;
+      addSentence = 'transform: ' + addSentence + ' rotate(' + rot + 'deg) ; left: ' + posX + '; top: ' + posY + ';';
+      element.style = addSentence;
+      let id = element.id; 
+      arrayOfImages2[id][3] = rot;
+      if (element.classList.contains(360) || rot == 360) {
+        element.classList.remove(360);
+      }
+      
+      if ( imgPorPages == 2 ) {
+        element.style.width = gralWidth + unitSize;
+        element.style.height = gralHeight + unitSize;
+      } else {
+        element.style.width = gralWidth + unitSize;
+        element.style.height = gralHeight + unitSize;
+      }
+      
+    }; // end of Rotation 
+    
+    
+    
+    function setPaperSize(e) {
+      if (arrayOfImages.length > 0) {
+        const page = document.getElementById("DragAndDrop");
+        let stl = "";
+        if (e.value == "A3") {
+          stl = "width: 297px; height: 420px; ";
+        } else if (e.value == "A4") {
+          stl = "width: 210px; height: 297px; ";
+        } else if (e.value == "Folio") {
+          stl = "width: 215px; height: 330px; ";
+        } else if (e.value == "Carta") {
+          stl = "width: 215px; height: 279px; ";
+        }
+        page.classList.remove("box");
+        page.style = stl;
+        
+        DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+      }
+    } // end of setPaperSize
+    
+    function setStretch() {
+      //console.log(e.getElementByTagName('img'));
+      const element = document.querySelectorAll(".pagePic").forEach( e =>{
+        if (e.classList.contains("stretched")) {
+          e.children[0].style.height = gralHeight + unitSize;
+          arrayOfImages2[(e.id)][1] = false;
+          e.classList.remove("stretched");
+          if (stretchImgs == true) {
+            stretchImgs = false;
+          }
+        } else  {
+          e.children[0].style.removeProperty("height");
+          //console.log(e.id);
+          arrayOfImages2[(e.id)][1] = true;
+          e.classList.add("stretched");
+          if (stretchImgs == false) {
+            stretchImgs = true;
+          }
+          
+        }
+      });
+    } //end of function setStretch
+    
+    function setCirculo() {
+      document.querySelectorAll(".pagePic").forEach(e => {
+        if (e.classList.contains("cir")) {
+          e.classList.remove("cir");
+          arrayOfImages2[(e.id)][2] = false;
+          //circleOn = false;
+        } else {
+          e.classList.add("cir");
+          arrayOfImages2[(e.id)][2] = true;
+          //circleOn = true;
+        }
+      });
+    }
+    
+    function setBorder(val) {
+      if (val == 0 || val == 2 ) {
+        
+        let R = document.getElementById("sliderR").value;
+        let G = document.getElementById("sliderG").value;
+        let B = document.getElementById("sliderB").value;
+        let S = document.getElementById("sliderS").value;
+        borderColor = S + 'px solid rgb(' + R + ',' + G + ',' + B + ')';
+        const bc = document.querySelector(':root');
+        //bc.style.setProperty('--pageBorder', borderColor);
+      
+//        console.log("bc: " + borderColor);
+        document.getElementById("targetColor").style.background = 'rgb(' + R + ',' + G + ',' + B + ')';
+        document.getElementById("targetColor").innerText = borderColor;
+        
+        document.querySelectorAll(".pagePic").forEach(e => {
+          arrayOfImages2[e.id][4] = borderColor;
+          e.classList.add('borde');
+        });
+        if (val == 2) {
+          DisplayPageToPrint(startFrom, imgPorPages, '');
+        }
+        
+      }
+      
+    } // end of function setBorder
+    
+    function showBdrCtr() {
+      setBorder(0);
+      if (document.querySelector(".colorPickers").classList.contains("displayOn")) {
+        document.querySelectorAll(".pagePic").forEach(e => {
+          if (arrayOfImages2[e.id][4].length > 5) {
+            arrayOfImages2[e.id][4] = "";
+            e.classList.remove("borde");
+          }
+        });
+        document.querySelector(".colorPickers").classList.remove("displayOn");
+        DisplayPageToPrint(startFrom, imgPorPages, '');
+      } else {
+        document.querySelector(".colorPickers").classList.add("displayOn");
+        DisplayPageToPrint(startFrom, imgPorPages, '');
+      }
+      
+    } // End of function showBdrCtr
+    
+    function calcIPP() {
+      const page = document.getElementById("DragAndDrop");
+      
+      let cantW = Math.floor(page.style.width.match(/\d+/)) - 0;
+      let cantH = Math.floor(page.style.height.match(/\d+/)) - 0;
+      let gW = Math.floor(gralWidth);
+      let gH = Math.floor(gralHeight);
+      let done = false;
+      let count = 0;
+      let disminuir = 0;
+      let end = 0;
+      let cImgs = 0;
+      
+      // se determina spaceBetweenW y cuantas imagenes entran de ancho
+      while (done == false && count < 10) {
+        cImgs = Math.floor(cantW / gralWidth); // cant de imgs por pagina
+        cImgs = cImgs - disminuir;
+        spaceBetweenW = Math.floor( ( cantW - (cImgs  * gralWidth) ) / (cImgs + 1)); // espacio sobrante entre imgs
+        if (spaceBetweenW <= 0) {
+          disminuir++;
+          spaceBetweenW = 1;
+        }
+        end = (spaceBetweenW * cImgs ) + ( gralWidth * cImgs );
+        if (end < cantW) {
+          done = true;
+        } else {
+          disminuir++;
+        }
+        if (cImgs < 0 || count >= 10) {
+          done = true;
+          console.log ("done is " + done +  ", count: " + count +  "cImgs: " + cImgs + ", disminuir: " + disminuir + ", spBW: " + spaceBetweenW + ", end: " + end);
+        }
+        //console.log ("done is " + done +  ", count: " + count +  "cImgs: " + cImgs + ", disminuir: " + disminuir + ", spB: " + spB + ", end: " + end);
+        count++;
+      }
+      
+      done = false;
+      count = 0;
+      disminuir = 0;
+      end = 0;
+      cImgs = 0;
+      // se determina spaceBetweenH y cuantas imagenes entran de Alto
+      while (done == false && count < 10) {
+        cImgs = Math.floor(cantH / gralHeight); // cant de imgs por pagina
+        cImgs = cImgs - disminuir;
+        spaceBetweenH = Math.floor( ( cantH - (cImgs  * gralHeight) ) / (cImgs + 1)); // espacio sobrante entre imgs
+        if (spaceBetweenH <= 0) {
+          disminuir++;
+          spaceBetweenH = 1;
+        }
+        end = (spaceBetweenH * cImgs ) + ( gralHeight * cImgs );
+        
+        if (end < cantH) {
+          done = true;
+        } else {
+          disminuir++;
+        }
+        if (cImgs < 0 || count >= 10) {
+          done = true;
+          console.log ("done is " + done +  ", count: " + count +  "cImgs: " + cImgs + ", disminuir: " + disminuir + ", spBH: " + spaceBetweenH + ", end: " + end);
+        }
+        //console.log ("done is " + done +  ", count: " + count +  "cImgs: " + cImgs + ", disminuir: " + disminuir + ", spB: " + spB + ", end: " + end);
+        count++;
+      }
+      
+      cantW = Math.floor((cantW - (spaceBetweenW )) / gW ); // imgs x width
+      cantH = Math.floor((cantH - (spaceBetweenH )) / gH); // imgs x height
+      imgPorPages = (cantW * cantH);
+      return [cantW, cantH, imgPorPages];
+    } // end of calcIPP
+    
+    function setLink() {
+      startFrom = this.id;
+      startFrom = startFrom - 1; // el array siempre tiene por lo menos un elemento
+      //console.log(startFrom + imgPorPages);
+      DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
+    } // end of setLink
+    
+    function setZoom() {
+      if (!arrayOfImages.length) {
+        return;
+      }
+      if (!document.getElementById("DragAndDrop").classList.contains("zoomEfect"))  {
+        var LMW = document.getElementById("lMenu").offsetWidth;
+        var LMH = document.getElementById("lMenu").offsetHeight;
+        var DADH = document.getElementById("DragAndDrop").offsetHeight;
+        var fs = LMH * 0.88;
+        var os = Math.floor(DADH * 100 / fs);
+        var pfs = 100 - Math.floor(DADH * 100 / fs);
+        
+        let setVal = 1 + ((pfs - 7) * 1 / os) ;
+        if (setVal < 0.01 ) {
+          console.log("setVal lower than 0.01 so is set to 1 : " + setVal );
+          setVal = 1;
+          
+        }
+        setVar('--zoomTo', setVal);
+        document.getElementById("DragAndDrop").classList.add("zoomEfect");
+        //document.getElementById("zoomBtn").innerText = 'Zoom Out';
+        switchLang(currentLang, 'zoom2');
+        //console.log("lMenuW: " + LMW + ", lMenuH: " + LMH + ", DADH: " + DADH + ", fs: " + fs + ", os: " + os + ", pfs: " + pfs + ", setVal:" + setVal) ;
+      } else {
+        document.getElementById("DragAndDrop").classList.remove("zoomEfect");
+        //document.getElementById("zoomBtn").innerText= 'Zoom In';
+        switchLang(currentLang, 'zoom1');
+      }
+    } // end of  function setZoom
+    
+    function switchLang(lang, btn) {
+      let i = document.getElementById("languageSelector");
+      if (this.id == "DisplayNoneBtn" && i.classList.contains("displayOn") ){
+        i.classList.remove("displayOn");
+        return;
+      } else {
+        if (!btn ) {
+          i.classList.add("displayOn");
+        }
+      }
+      
+      var esp = {
+        cLang : "esp",
+        title : "Menu de impresión echo a mano", 
+        lang : "Idioma",
+        dis : "Listo",
+        pS : "Tamaño-papel",
+        fol : "Folio",
+        crt : "Carta",
+        str : "Estirar",
+        cir : "Circulo",
+        bor : "Borde",
+        wel : "Arrastre y tire aqui sus archivos <p> o <p> Click para seleccionarlos",
+        pag1 : "Pagina",
+        pag2 : "de",
+        print : "Imprimir",
+        zoom1 : "Acercar",
+        zoom2 : "Alejar",
+        pic : "Tamaño-imagen"
+      };
+      var eng = {
+        cLang : "eng",
+        title : "Handmade print images menu", 
+        lang : "Language",
+        dis : "Done",
+        pS : "Paper Size",
+        fol : "Folio",
+        crt : "Letter",
+        str : "Stretch",
+        cir : "Circle",
+        bor : "Border",
+        wel : "Drag and Drop your files here <p> or <p> Click to upload",
+        pag1 : "Page",
+        pag2 : "of",
+        print : "Print",
+        zoom1 : "Zoom In",
+        zoom2 : "Zoom Out",
+        pic : "Picture Size"
+      };
+      //console.log(esp);
+      if (lang == "esp") {
+        currentLang = esp;
+      } else if (lang == "eng") {
+        currentLang = eng;
+      } else {
+        return;
+      }
+      /*
+      console.log( lang );
+      if (lang != "esp" && lang != "eng") {
+        lang = "esp";
+      } 
+      console.log(currentLang);
+      document.getElementById("").innerText = "";
+      */
+      if ((currentLang) && (!btn)) {
+        document.getElementById("mainTitle").innerText = currentLang.title;
+        document.getElementById("switchLangBtn").innerText = currentLang.lang;
+        document.getElementById("DisplayNoneBtn").innerText = currentLang.dis;
+        document.getElementById("pS").innerText = currentLang.pS;
+        document.getElementById("folio").innerText = currentLang.fol;
+        document.getElementById("carta").innerText = currentLang.crt;
+        document.getElementById("StretchBtn").innerText = currentLang.str;
+        document.getElementById("circuloBtn").innerText = currentLang.cir;
+        document.getElementById("bordeBtn").innerText = currentLang.bor;
+        if (document.getElementById("welcomeText")) {
+          document.getElementById("welcomeText").innerHTML = currentLang.wel;
+        }
+        document.getElementById("btn1").innerText = currentLang.pag1;
+        document.getElementById("pagt01").innerText = currentLang.pag1;
+        document.getElementById("pagt02").innerText = currentLang.pag2;
+        document.getElementById("printBtn").innerText = currentLang.print;
+        document.getElementById("zoomBtn").innerText = currentLang.zoom1;
+        document.getElementById("picSize").innerText = currentLang.pic;
+      };
+      if (btn == 'zoom1' || !btn) {
+        document.getElementById("zoomBtn").innerText = currentLang.zoom1;
+      } else if (btn == 'zoom2') {
+        document.getElementById("zoomBtn").innerText = currentLang.zoom2;
+      }
+      currentLang = currentLang.cLang;
+      //console.log(currentLang);
+      //displayOn
+      /*let currentLang = document.getElementById("switchLangBtn").innerText;
+      //console.log("currentLang: " + currentLang);
+      let Divs = document.querySelectorAll('div').forEach(e => {
+        if (e.id && e.innerText ){
+          console.log(e.id + ', innerText: ' + e.innerText);
+        }
+      });*/
+      
+      
+    } // End of function switchLang
+    
+    function hideLan() {
+      const i = document.getElementById("languageSelector");
+      if (i.classList.contains("displayOn")) {
+        i.classList.remove("displayOn");
+      }
+    } // end of hideLan
+    
+    function switchMode() {
+      //pressMode
+      //setVar('', '');
+      // ill keep this two here by default but a json complementory file will be added for future moding thingies
+      if (pressMode == 1) {
+        setVar('--clr', '#191919'); 
+        setVar('--clrbtn', 'rgb\(50 50 50\)');
+        setVar('--bodyBack', 'radial-gradient\(#000, #222\)');
+        setVar('--btnHov', '6px double #595959');
+        document.getElementById("switchModeBtn").innerText = "Dark Mode";
+        pressMode = pressMode + 1;
+        
+      } else if (pressMode == 2) {
+        setVar('--clr', '#ffffff'); 
+        setVar('--clrbtn', 'rgb\(200 200 200\)');
+        setVar('--bodyBack', 'radial-gradient\(#222, #fff\)');
+        setVar('--btnHov', '6px double #ddd');
+        document.getElementById("switchModeBtn").innerText = "Light Mode";
+        pressMode = 1; // currently 2 is the last mode
+      }
+    // files/colors.js      
+    // outputs the content of the text file
+      
+  
+    } // End of function switchMode
+    
+    function goLorR (dir) {      
+      let dirX = 0;
+      if (dir == "L") {
+        dirX = 1;
+      } else if (dir == "R") {
+        dirX = -1;
+      }
+      
+      let elements = document.querySelectorAll(".refImg");
+      let w = 50;
+      
+      for (let e of elements) {
+        let l = e.style.left.match(/\d+/);
+        if (!l) {
+          l = w;
+        }
+        let l2 = Number(l) + (w  * dirX);
+        //console.log("1er l: " + l + ", 1er dirX: " + dirX + ", " + (dirX) + ", l2: " + l2);
+        e.style = "width: 50px; left: " + l2  + "px; height: 90%; position: relative;";
+      
+      }
+    }
+    
+  </script>
+    
+
+  <style>
+   :root {
+      --gralW: 100px;
+      --gralH: var(--gralW);
+      --clr: #191919;
+      --clrBorder: 2px solid black;
+      --pageBorder: 2px solid black;
+      --clrbtn: rgb(50 50 50);
+      --grlPadding: 5px;
+      --menuH: 300px;
+      --bodyBack: radial-gradient(#000, #222);
+      --zoomTo: 1.9;
+      --btnHov: 6px double #595959;
+    }
+    
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    
+  }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    
+    min-height: 90vh;
+    background: var(--bodyBack);
+  }
+  
+  h2 {
+    position: absolute;
+    top: 1vh;
+  }
+  
+  .box {
+    position: relative;
+    border:  var(--clrBorder);
+    border-radius: 10px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    
+
+  }
+  
+  .borde {
+    border: var(--pageBorder);
+  }
+  
+  .btn {
+    cursor: pointer;
+    background: var(--clrbtn);
+    border: var(--clrBorder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    padding: var(--grlPadding);
+  }
+  
+  .btn:hover {
+    border: var(--btnHov);
+    font-weight: 700;
+  }
+  
+  .cir {
+    border-radius: 50%;
+    background: var(--clrbtn);
+    width: 40px;
+    height: 40px;
+    padding: var(--grlPadding);
+  }
+    
+  .printerMenu {
+    position: absolute;
+    width: 90vw;
+    height: 5vh;
+    top: 5vh;
+    left: 5vw;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .container {
+    position: relative;
+    display: flex;
+    width: 90vw;
+    top: 12vh;
+    height: 75vh;
+    justify-content: space-evenly;
+    align-items: center;
+    
+  }
+  
+  .rMenu {
+    position: relative;
+    width: 15%;
+    min-width: 150px; 
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  
+  .Sizes {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 90%;
+  }
+  
+  .sizes {
+    height: 10%;
+    width: 95%;
+    border-radius: 0px;
+  }
+  
+  .lMenu {
+    width: 80%;
+    height: 98%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-items: center;
+    overflow: hidden;
+  }
+  
+  .subMenu {
+    position: absolute;
+    top: 88%;
+    width: 95%;
+    height: 70px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .DragAndDrop {
+    position: relative;
+    display: flex;
+    width: 95%;
+    height: 85%;
+    top: -7%;
+    background: #888;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    transition: 0.9s;
+    overflow: hidden;
+    margin: 0; 
+    padding: 0;
+  }  
+  
+  .pagePic {
+    position: relative;
+    background: white;
+    transition: 0.5s;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s;
+    left: 0px;
+    top: 0px;
+  }
+  
+  .DragAndDrop--over {
+    border: 2px solid red;
+  }
+  
+  .DragZone-input {
+    display: none;
+  }
+  
+  .DragZone-thumb {
+    width: 100%;
+    height: 100%;
+    border: 10px solid #fff;
+    overflow: hidden;
+    background-color: #ccc ;
+    background-size: cover;
+    position: relative; 
+  }
+  
+  .DragZone-thumb::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75);
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .smallImgs {
+    position: absolute;
+    width: 90vw;
+    height: 10vh;
+    top: 88vh;
+    left: 5vw;
+    display: flex;
+    justify-content: space-evenly;
+    overflow: hidden;
+  }
+  
+  .gridClass3x3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+  
+  .gridClass2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr ;
+  }
+  
+  .gridClass2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr ;
+  }
+  .gridClassCustom{
+    position: absolute;
+  }
+  
+  .weightBtn {
+    width: 15%;
+  }
+  
+  .customSize {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: center;
+  }
+  
+  .inpTxt {
+    position: relative;
+    height: 25px;
+    width: 40px;
+    font-weight: 400;
+    text-align: center;
+  }
+  
+  .testGrid {
+  }
+  
+  .imgToPrint {
+    display: none;
+  }
+  
+  .zoomEfect {
+    transform: scale(var(--zoomTo));
+    transform-origin: 50% 50% 0px;
+
+  }
+
+  .colorPickers {
+    display: none;
+    position: absolute;
+    width: 250px;
+    height: 120px;
+    left: 0%;
+    top: 70px;
+    margin: 0px;
+    padding: 0px;
+    align-items: center;
+
+    z-index: 10;
+  }
+  
+  .slider{
+    position: relative;
+    margin: 2px;
+    left: -10px;
+
+  }
+  
+  .languageSelector {
+    display: none;
+    position: relative;
+    width: 15%;
+    height: 120px;
+    left: -13%;
+    top: 80px;
+    background: var(--clrbtn);
+    z-index: 10;
+    
+  }
+  
+  .displayOn {
+    display: flex;
+  }
+  
+  .goL, .goR {
+    position: absolute;
+    opacity: 0.2;
+    height: 90%;
+    width: 25px;
+    z-index: 15;
+  }
+  
+  .goL:hover, .goR:hover {
+    width: 40px;
+    opacity: 0.7;
+    
+  }
+  
+  .goL {
+    left: 1px;
+  }
+  
+  .goR {
+    right: 1px;
+    
+  }
+  
+  </style>
+</body>
+</html>
+

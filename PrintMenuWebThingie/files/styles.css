@@ -1,0 +1,305 @@
+/* 
+  i don't really want to use this file but whatever... created 2023 07 07 
+*/
+:root {
+      --gralW: 100px;
+      --gralH: var(--gralW);
+      --clr: #191919;
+      --clrBorder: 2px solid black;
+      --pageBorder: 2px solid black;
+      --clrbtn: rgb(50 50 50);
+      --grlPadding: 5px;
+      --menuH: 300px;
+      --bodyBack: radial-gradient(#000, #222);
+      --zoomTo: 1.9;
+      --btnHov: 6px double #595959;
+    }
+    
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    
+  }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    
+    min-height: 90vh;
+    background: var(--bodyBack);
+  }
+  
+  h2 {
+    position: absolute;
+    top: 1vh;
+  }
+  
+  .box {
+    position: relative;
+    border:  var(--clrBorder);
+    border-radius: 10px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    
+
+  }
+  
+  .borde {
+    border: var(--pageBorder);
+  }
+  
+  .btn {
+    cursor: pointer;
+    background: var(--clrbtn);
+    border: var(--clrBorder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    padding: var(--grlPadding);
+  }
+  
+  .btn:hover {
+    border: var(--btnHov);
+    font-weight: 700;
+  }
+  
+  .cir {
+    border-radius: 50%;
+    background: var(--clrbtn);
+    width: 40px;
+    height: 40px;
+    padding: var(--grlPadding);
+  }
+    
+  .printerMenu {
+    position: absolute;
+    width: 90vw;
+    height: 5vh;
+    top: 5vh;
+    left: 5vw;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .container {
+    position: relative;
+    display: flex;
+    width: 90vw;
+    top: 12vh;
+    height: 75vh;
+    justify-content: space-evenly;
+    align-items: center;
+    
+  }
+  
+  .rMenu {
+    position: relative;
+    width: 15%;
+    min-width: 150px; 
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  
+  .Sizes {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 90%;
+  }
+  
+  .sizes {
+    height: 10%;
+    width: 95%;
+    border-radius: 0px;
+  }
+  
+  .lMenu {
+    width: 80%;
+    height: 98%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-items: center;
+    overflow: hidden;
+  }
+  
+  .subMenu {
+    position: absolute;
+    top: 88%;
+    width: 95%;
+    height: 70px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .DragAndDrop {
+    position: relative;
+    display: flex;
+    width: 95%;
+    height: 85%;
+    top: -7%;
+    background: #888;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 700;
+    transition: 0.9s;
+    overflow: hidden;
+    margin: 0; 
+    padding: 0;
+  }  
+  
+  .pagePic {
+    position: relative;
+    background: white;
+    transition: 0.5s;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s;
+    left: 0px;
+    top: 0px;
+  }
+  
+  .DragAndDrop--over {
+    border: 2px solid red;
+  }
+  
+  .DragZone-input {
+    display: none;
+  }
+  
+  .DragZone-thumb {
+    width: 100%;
+    height: 100%;
+    border: 10px solid #fff;
+    overflow: hidden;
+    background-color: #ccc ;
+    background-size: cover;
+    position: relative; 
+  }
+  
+  .DragZone-thumb::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75);
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  .smallImgs {
+    position: absolute;
+    width: 90vw;
+    height: 10vh;
+    top: 88vh;
+    left: 5vw;
+    display: flex;
+    justify-content: space-evenly;
+    overflow: hidden;
+  }
+  
+  .gridClass3x3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+  
+  .gridClass2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr ;
+  }
+  
+  .gridClass2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr ;
+  }
+  .gridClassCustom{
+    position: absolute;
+  }
+  
+  .weightBtn {
+    width: 15%;
+  }
+  
+  .customSize {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: center;
+  }
+  
+  .inpTxt {
+    position: relative;
+    height: 25px;
+    width: 40px;
+    font-weight: 400;
+    text-align: center;
+  }
+  
+  .testGrid {
+  }
+  
+  .imgToPrint {
+    display: none;
+  }
+  
+  .zoomEfect {
+    transform: scale(var(--zoomTo));
+    transform-origin: 50% 50% 0px;
+
+  }
+
+  .colorPickers {
+    display: none;
+    position: absolute;
+    width: 250px;
+    height: 120px;
+    left: 0%;
+    top: 70px;
+    margin: 0px;
+    padding: 0px;
+    align-items: center;
+
+    z-index: 10;
+  }
+  
+  .slider{
+    position: relative;
+    margin: 2px;
+    left: -10px;
+
+  }
+  
+  .languageSelector {
+    display: none;
+    position: relative;
+    width: 15%;
+    height: 120px;
+    left: -13%;
+    top: 80px;
+    background: var(--clrbtn);
+    z-index: 10;
+    
+  }
+  
+  .displayOn {
+    display: flex;
+  }
+  
