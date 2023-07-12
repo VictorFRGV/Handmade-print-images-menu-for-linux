@@ -506,30 +506,22 @@
       //console.log("SC: " + secundaryClass);
       
       //lots of shiet here, it should be simplify
-      let styles001 = 'style=\" width: 98%; height: 98%; justify-content: center; ';
+      let styles001 = 'style=\" width: 98%; height: 98%; ';
       let styles002 = "";
       let bodyStyle = 'style=\"display: flex; position: relative; margin: 0; padding: 0;\"'; //justify-content: center; align-content: center;\"';
       
       if (secundaryClass == "testGrid") {
-        styles002 = ' .gridClassCustom \{ position: absolute;  \}';
+        //styles002 = ' .gridClassCustom \{ position: absolute;  \}';
       } 
       if (imgPorPages == 1 || secundaryClass == "") {
-        styles002 = ' .grid \{ display: flex; justify-content: center; align-items: center; \} .pagePic \{ position: relative;\}';
-        styles001 += ' align-items: center; ';
+        //styles002 = ' .grid \{ display: flex; \} '; // justify-content: center; align-items: center; \} .pagePic \{ position: relative;\}';
+        //styles001 += ' align-items: center; ';
       } else if (imgPorPages >= 2 && imgPorPages < 9) {
-        styles002 = ' .gridClassCustom \{ position: absolute;  display: flex; \}'; //justify-content: center; align-items: center; \}';
+        //styles002 = ' .gridClassCustom \{ position: absolute;  display: flex; \}'; //justify-content: center; align-items: center; \}';
       }
       //console.log("st01: " + styles001);
-      
-     if ( borderOn == true) {
-       styles002 += ' .borde \{border:' + borderColor + ';\}';
-     }
-    
-     
-     styles002 += ' .cir \{border-radius: 50%; overflow: hidden;\}';
-     
-     
-    
+      //styles002 += ' .borde \{border:' + borderColor + ';\}';
+      //styles002 += ' .cir \{border-radius: 50%; overflow: hidden;\}';
       
       const page = document.getElementById("DragAndDrop");
       
@@ -548,7 +540,7 @@
       frameDoc.document.write('</head><body width=\"' + cantW + 'mm\" height=\"' + cantH + 'mm\" ' + bodyStyle + ' >');
       frameDoc.document.write('<div class=\"grid\" ' + styles001 + '\"  >');
       frameDoc.document.write(contents);
-      frameDoc.document.write('</div><style>' + styles002 + ' </style>');
+      frameDoc.document.write('</div><style>' + styles002 + ' .pagePic \{ position: absolute; display: flex; align-items: center; justify-content: center;\} .cir \{border-radius: 50%; overflow: hidden;\} .borde \{border:' + borderColor + ';\} </style>');
       frameDoc.document.write('</body></html>');
       frameDoc.document.close();
       setTimeout(function () {
