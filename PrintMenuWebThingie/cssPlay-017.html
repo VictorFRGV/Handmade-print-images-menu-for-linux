@@ -538,9 +538,9 @@
       
       frame1.style.width = cantW + unitSize;
       frame1.style.height = cantH + unitSize;
-      frame1.id = "remove"; // uN-comment for debuging ----------
+      //frame1.id = "remove"; // uN-comment for debuging ----------
       frame1.classList.add(document.getElementById("imgToPrint").classList[1]);
-      //frame1.style.top = "1000000px";  // comment for debuging ----------
+      frame1.style.top = "1000000px";  // comment for debuging ----------
       document.body.appendChild(frame1);
       let frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
       frameDoc.document.open();
@@ -558,12 +558,12 @@
           //win.document.write["frame1"];
           
           window.frames["frame1"].print();
-          //document.body.removeChild(frame1); // comment for debuging ----------
+          document.body.removeChild(frame1); // comment for debuging ----------
       }, 500);
       unitSize = Ts;
       stlDiv = "";
       DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
-      document.body.addEventListener('click', removeFrames);  // uN-comment for debuging ----------
+      //document.body.addEventListener('click', removeFrames);  // uN-comment for debuging ----------
       return false;
       
     } // end of function PrintDiv
