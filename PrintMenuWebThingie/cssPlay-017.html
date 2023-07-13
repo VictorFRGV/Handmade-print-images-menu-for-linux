@@ -20,10 +20,10 @@
         <div class="switchLangBtn btn weightBtn" id="switchLangBtn" >Language</div>
         <div class="languageSelector" id="languageSelector" >
           <ul>
-            <li onclick="switchLang('esp', 0)">Español</li>
-            <li onclick="switchLang('eng', 0)">English</li>
-            <li>Other</li>
-            <li><div class="DisplayNoneBtn btn " id="DisplayNoneBtn"  >Done</div></li>
+            <li class="btn" onclick="switchLang('esp', 0)">Español</li>
+            <li class="btn" onclick="switchLang('eng', 0)">English</li>
+            <li class="btn">Other</li>
+            <li class="DisplayNoneBtn btn " id="DisplayNoneBtn" onclick="switchLang('cerrar', 0)">Done</li>
           </ul><br>
           
         </div>
@@ -40,16 +40,23 @@
         <div class="StretchBtn btn weightBtn" id="StretchBtn">Stretch  </div>
         <div class="circuloBtn btn weightBtn" id="circuloBtn">Circulo</div>
         <div class="bordeBtn btn weightBtn" id="bordeBtn" onclick="showBdrCtr()">Borde</div>
-        <div class="colorPickers " >
-        <form>
-          R: <input type="range" min="0" max="255" value="1" class="slider" id="sliderR" onchange="setBorder(2)"><br>
-          G: <input type="range" min="0" max="255" value="1" class="slider" id="sliderG" onchange="setBorder(2)"><br>
-          B: <input type="range" min="0" max="255" value="1" class="slider" id="sliderB" onchange="setBorder(2)"><br>
-          L: <input type="range" min="0" max="10" value="1" class="slider" id="sliderS" onchange="setBorder(2)"><br>
-          <div class="simpleText" id="targetColor"></div>
-
+        <div class="sliderMenu colorPickers " >
+          <form>
+            R: <input type="range" min="0" max="255" value="1" class="slider" id="sliderR" onchange="setBorder(2)"><br>
+            G: <input type="range" min="0" max="255" value="1" class="slider" id="sliderG" onchange="setBorder(2)"><br>
+            B: <input type="range" min="0" max="255" value="1" class="slider" id="sliderB" onchange="setBorder(2)"><br>
+            L: <input type="range" min="0" max="10" value="1" class="slider" id="sliderS" onchange="setBorder(2)"><br>
+            <div class="simpleText" id="targetColor"></div>
           </form>
         </div>
+        <div class="sliderMenu circlePorcentage " >
+          <form>
+            <span id="circlePorcText"> %: </span>
+            <input type="range" min="0" max="50" value="1" class="slider" id="sliderC" onchange="setCirculo(2)"><br>
+            <div class="simpleText" id="pCirculo"></div>
+          </form>
+        </div>
+
     </div>
 
 
@@ -73,6 +80,10 @@
         </div>
           <div class="dirAdRev prev cir btn "><<</div>
           <div class="dirAdRev next cir btn ">>></div>
+          <div class="" id="CustomSize" >
+            <span id="cantCT"> Cantidad de copias :</span>
+            <input type="number" min="1" max="99" step="1" value="1" id="cantCopias" name="cantCopias" class="inpTxt cantCopias" onchange="setCopias(this)">
+          </div>
           <div class="weightBtn print box btn" id="printBtn"><span>Print</span></div>
           <div class="weightBtn zoom box btn" id="zoomBtn"><span>Zoom In</span></div>
         </div>
@@ -86,9 +97,9 @@
         <div class="sizes box btn">13 x 9</div>
         <div class="sizes box btn">8 x 6</div>
         <div class="customSize sizes btn" id="CustomSize" >
-          <input type="text" id="cWidth" name="cWidth" class="inpTxt">
+          <input type="number" min="1" step="1" value="10" id="cWidth" name="cWidth" class="inpTxt">
           <span> x </span>
-          <input type="text" id="cHeight" name="cHeight"class="inpTxt">
+          <input type="number" min="1" step="1" value="10" id="cHeight" name="cHeight"class="inpTxt">
         </div>
 
        
@@ -101,7 +112,8 @@
   <div class="imgToPrint" id="imgToPrint">
     
   </div>
-  <div style="display: none" class="hideMe">
+  <div class="errorBox btn box" id="errorBox" onclick="hideMe(this)" ></div>
+  <div style="display: none" >
       <button onclick="f()">
          Click Me To Get Student Details
       </button>
@@ -164,7 +176,7 @@
   
     
     let arrayOfImages = [];
-    let arrayOfImages2 = []; //['id', 'stretch', 'circle', 'rotation', 'border'];
+    let arrayOfImages2 = []; // ['id', 'stretch', 'circle', 'rotation', 'borderpx', 'borderStyle', 'borderR', 'borderG', 'borderB' , cantCopias ];
     let arrayState = []
     let arrayOfImagesToPrint = [];
     let imgPorPages = 1;
@@ -181,7 +193,7 @@
     let stretchImgs = false;
     let reloadPage = false;
     let pressMode = 2;
-    let currentLang = "esp";
+    let currentLang = "eng";
 
     document.getElementById("printBtn").addEventListener("click", PrintDiv);
     document.getElementById("StretchBtn").addEventListener("click", setStretch);
@@ -190,7 +202,7 @@
     document.getElementById("switchModeBtn").addEventListener("click", switchMode);
     document.getElementById("switchLangBtn").addEventListener("click", switchLang);
     //document.getElementById("languageSelector").addEventListener("click", languageSelector);
-    document.getElementById("DisplayNoneBtn").addEventListener("click", hideLan);
+    //document.getElementById("DisplayNoneBtn").addEventListener("click", hideLan);
     
     setBorder(0);
     switchLang(currentLang, 'nope');
@@ -253,19 +265,13 @@
           }
         };
         dropZoneElement.classList.remove("DragAndDrop--over");
-        if (!document.getElementById("welcomeText")) {
-          //imgPorPages = arrayOfImages.length ;
-          //console.log("imgPorPages: " + imgPorPages);
-          DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
-        }
-
       });
-      
     }); // end of drag and drop function
     
     function loadArray(file, a) {
       let arrayTemp = [];
       arrayTemp[0] = a;
+      //let cantCopys = document.getElementById('cantCopias').value; // is better to keep just as 1 unit
       if (file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -285,13 +291,13 @@
           img2.style = "width: 50px; height: 90%; border-radius: 5%;";
           img2.classList.add("refImg");
           img2.setAttribute('id', arrayOfImages.length);
-                                                // ['id', 'stretch', 'circle', 'rotation', 'border'];
-          arrayOfImages2.push([(arrayOfImages.length - 1), false, false, 0, ""]);
+                                                // ['id', 'stretch', 'circle', 'rotation', 'borderpx', 'borderStyle', 'borderR', 'borderG', 'borderB' ];
+                                                
+          arrayOfImages2.push([(arrayOfImages.length - 1), false, 0, 0, 0, 'solid', 0, 0, 0, 1]);
           img2.addEventListener("click", setLink);
           document.getElementById("smallImgs").appendChild(img2);
           if (!document.querySelector(".pagePic")) {
             hideWelcomeText();
-            DisplayPageToPrint(startFrom, imgPorPages, stlDiv);
             calcPages(arrayOfImages.length);
           }
         };
@@ -299,8 +305,27 @@
       
     } // enf of loadArray
     
-    function DisplayPageToPrint(startFrom, cant, stlDiv) {
-      //console.log(" Display - stlDiv: " + stlDiv);
+    function DisplayPageToPrint(startFro, cant, stlDiv) {
+      //console.log(" Display - stlDiv: " + stlDiv + ", startFrom: " + startFrom + ", imgPorPages: " + imgPorPages);
+      if (startFrom <= 0) {
+        startFrom = 0;
+      }
+      if (imgPorPages <= startFrom) {
+        imgPorPages = 1;
+      }
+      if (startFrom >= (arrayOfImages.length - 1)) {
+        startFrom = (arrayOfImages.length - 1);
+        imgPorPages = 1;
+      }
+    
+      // this isn't working, it should be re-done
+      // to make multiple pages 
+      // and display it side by side
+      // with multiple copies of each image
+      // just keep in mind than this is only a web page and not a program
+      
+    
+      
       let pag = document.getElementById("paperSizes");
       let inserDiv = true;
       let cargarPagImpress = false;
@@ -339,101 +364,100 @@
       imgPW = result[0];
       
       for(let i = startFrom; i < (startFrom + imgPorPages); i++) {
-        
         if (arrayOfImages.length > 0 && arrayOfImages[i] != null) {
-          let sentence; 
-          //console.log("DisplayPageToPrint: " + startFrom + " , " + imgPorPages);
-          let newDiv = document.createElement("DIV");
-          newDiv.classList.add("pagePic");
-          
-          let img = document.createElement("img");
-          img.src = arrayOfImages[i].src;
-          
-          newDiv.id = i;
-          sentence = ' width: ' + gralWidth + unitSize + ';';
-          sentence += ' height: ' + gralHeight + unitSize + ';';
-          /*
-          newDiv.style.width = gralWidth + unitSize;
-          newDiv.style.height = gralHeight + unitSize;
-          */
-          
-          if ( imgPorPages == 2 && result[0] != 2) {
-            //newDiv.style.transform = 'rotate(90deg)';
-            if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
+          if ( arrayOfImages2[i][9] > 0) {
+            for (let j = 0 ; j < arrayOfImages2[i][9] ; j++) {
+              let sentence; 
+              //console.log("DisplayPageToPrint: " + startFrom + " , " + imgPorPages);
+              let newDiv = document.createElement("DIV");
+              newDiv.classList.add("pagePic");
+
+              let img = document.createElement("img");
+              img.src = arrayOfImages[i].src;
+              
+              newDiv.id = i;
               sentence = ' width: ' + gralWidth + unitSize + ';';
               sentence += ' height: ' + gralHeight + unitSize + ';';
-              img.style = "transform: rotate(90deg); width: " + gralHeight + unitSize + "; height: " + gralWidth + unitSize + ";";
-            } else {
-              sentence += ' width: ' + gralHeight + unitSize + ';';
-              sentence += ' height: ' + gralWidth + unitSize + ';';
-              img.style = "transform: rotate(90deg); width: " + gralWidth + unitSize + "; height: " + gralHeight + unitSize + ";";
-            }
-          } else {
-            img.style.width = gralWidth + unitSize;
-            img.style.height = gralHeight + unitSize;
-          }
-          //console.log('1rs sentence: ' + sentence);
-          
-          newDiv.appendChild(img);
-          //if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
-            newDiv.classList.add("gridClassCustom");
-            //let result = calcIPP();
 
-            let checkW = (spaceBetweenW * contPosC ) + (gralWidth * contPosC) + ( gralWidth * 1 );
-            let pW = document.getElementById("DragAndDrop").style.width.match(/\d+/);
-
-            if (checkW >= pW ) {
-              //console.log(document.getElementById("DragAndDrop").style.width);
-              //console.log("checkW. " + checkW + " is greater than DragAndDrop width: " + pW);
-              contPosC = 0;
-              contPosR = contPosR + 1;
-            } 
-            let checkH = (spaceBetweenH * contPosR ) + (gralHeight * contPosR) + (gralHeight * 1);
-            let pH = document.getElementById("DragAndDrop").style.height.match(/\d+/);
-            if (checkH >= pH) {
-              imgPorPages = i;
-              inserDiv = false;
-              console.log("checkH: " + checkH + " is greater than DragAndDrop height: " + pH);
-            }
-            if (inserDiv == true) {
-              sentence += ' left: ' + Math.floor((spaceBetweenW * (contPosC + 1) ) + (gralWidth * contPosC)) + unitSize + '; ';
-              sentence += ' top: ' + Math.floor((spaceBetweenH * (contPosR + 1) ) + (gralHeight * contPosR)) + unitSize + '; ';
-              if (Math.floor(arrayOfImages2[i][3]) != 0) {
-                sentence += ' transform: rotate(' + Math.floor(arrayOfImages2[i][3]) + 'deg);'; 
-                newDiv.classList.add(arrayOfImages2[i][3]);
-                
-              };
-              if (arrayOfImages2[i][2] == true) {
-                newDiv.classList.add("cir");
-              };
+              if ( imgPorPages == 2 && result[0] != 2) {
+                //newDiv.style.transform = 'rotate(90deg)';
+                if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
+                  sentence = ' width: ' + gralWidth + unitSize + ';';
+                  sentence += ' height: ' + gralHeight + unitSize + ';';
+                  img.style = "transform: rotate(90deg); width: " + gralHeight + unitSize + "; height: " + gralWidth + unitSize + ";";
+                } else {
+                  sentence += ' width: ' + gralHeight + unitSize + ';';
+                  sentence += ' height: ' + gralWidth + unitSize + ';';
+                  img.style = "transform: rotate(90deg); width: " + gralWidth + unitSize + "; height: " + gralHeight + unitSize + ";";
+                }
+              } else {
+                img.style.width = gralWidth + unitSize;
+                img.style.height = gralHeight + unitSize;
+              }
+              //console.log('1rs sentence: ' + sentence);
               
-              if (arrayOfImages2[i][4].length > 5 ) {
-                sentence += ' border: ' + arrayOfImages2[i][4] + ';';
-                newDiv.classList.add("borde");
-                //document.querySelector(".colorPickers").classList.("displayOn");
+              newDiv.appendChild(img);
+              //if (document.getElementById("DragAndDrop").classList.contains("testGrid")) {
+                newDiv.classList.add("gridClassCustom");
+                //let result = calcIPP();
+
+                let checkW = (spaceBetweenW * contPosC ) + (gralWidth * contPosC) + ( gralWidth * 1 );
+                let pW = document.getElementById("DragAndDrop").style.width.match(/\d+/);
+
+                if (checkW >= pW ) {
+                  //console.log(document.getElementById("DragAndDrop").style.width);
+                  //console.log("checkW. " + checkW + " is greater than DragAndDrop width: " + pW);
+                  contPosC = 0;
+                  contPosR = contPosR + 1;
+                } 
+                let checkH = (spaceBetweenH * contPosR ) + (gralHeight * contPosR) + (gralHeight * 1);
+                let pH = document.getElementById("DragAndDrop").style.height.match(/\d+/);
+                if (checkH >= pH) {
+                  imgPorPages = i;
+                  inserDiv = false;
+                  //console.log("checkH: " + checkH + " is greater than DragAndDrop height: " + pH);
+                }
+                if (inserDiv == true) {
+                  sentence += ' left: ' + Math.floor((spaceBetweenW * (contPosC + 1) ) + (gralWidth * contPosC)) + unitSize + '; ';
+                  sentence += ' top: ' + Math.floor((spaceBetweenH * (contPosR + 1) ) + (gralHeight * contPosR)) + unitSize + '; ';
+                  if (Math.floor(arrayOfImages2[i][3]) != 0) {
+                    sentence += ' transform: rotate(' + Math.floor(arrayOfImages2[i][3]) + 'deg);'; 
+                    newDiv.classList.add(arrayOfImages2[i][3]);
                 
-              };
-              if (imgPorPages == 1 && arrayOfImages2[i][4].length == 0) {
-                if (document.querySelector(".colorPickers").classList.contains("displayOn") ) {
-                  document.querySelector(".colorPickers").classList.remove("displayOn");
-                };
-              };
-              //console.log('final sentence: ' + sentence);
-              newDiv.style = sentence;
-              //console.log("left: " + newDiv.style.left + ", top: " + newDiv.style.top);
+                  };
+                  if (arrayOfImages2[i][2] > 0) {
+                    newDiv.classList.add("cir");
+                    sentence += ' border-radius: '+ arrayOfImages2[i][2] + '%;';
+                  };
+                  
+                  if (arrayOfImages2[i][4].length > 0 ) {
+                    sentence += ' border: ' + arrayOfImages2[i][4] + unitSize + ' ' + arrayOfImages2[i][5] + ' rgb(' + arrayOfImages2[i][6] + ',' + arrayOfImages2[i][7] + ',' + arrayOfImages2[i][8] + ')';
+                    newDiv.classList.add("borde");
+                    //document.querySelector(".colorPickers").classList.add("displayOn");
+                  };
+                  if (imgPorPages == 1 && arrayOfImages2[i][4].length == 0) {
+                    if (document.querySelector(".colorPickers").classList.contains("displayOn") ) {
+                      document.querySelector(".colorPickers").classList.remove("displayOn");
+                    };
+                  };
+                  //console.log('final sentence: ' + sentence);
+                  newDiv.style = sentence;
+                  //console.log("left: " + newDiv.style.left + ", top: " + newDiv.style.top);
+                }
+                if (contPosC < imgPW) { 
+                  contPosC = contPosC + 1;
+                } 
+              //}
+              if (inserDiv == true) {
+                document.getElementById("DragAndDrop").appendChild(newDiv);
+              } else {
+                //console.log("inserDiv: " + inserDiv);
+                return false;
+              }
+              if (cargarPagImpress == true) {
+                document.getElementById("imgToPrint").appendChild(newDiv);
+              }
             }
-            if (contPosC < imgPW) { 
-              contPosC = contPosC + 1;
-            } 
-          //}
-          if (inserDiv == true) {
-            document.querySelector(".DragAndDrop").appendChild(newDiv);
-          } else {
-            console.log("inserDiv: " + inserDiv);
-            return false;
-          }
-          if (cargarPagImpress == true) {
-            document.getElementById("imgToPrint").appendChild(newDiv);
           }
         }
       }
@@ -441,14 +465,9 @@
       if (stretchImgs == true) {
         document.getElementById("StretchBtn").click();
       };
-      /*
-      if (borderOn ==  true) {
-        setBorder(0);
-        //document.getElementById("bordeBtn").click();
-      };
-      */
       
       addRotation();
+      
     } // end of DisplayPageToPrint
     
     function addRotation() {
@@ -457,9 +476,6 @@
       });
       //const element3 = document.querySelector(".DragAndDrop");
       //element3.addEventListener("click", Rotation);
-      const element2 = document.querySelectorAll(".refImg").forEach( e => {
-        e.addEventListener("click", setLink);
-      });
     } // end of addRotation
     
     function hideWelcomeText() {
@@ -468,10 +484,6 @@
           document.getElementById("welcomeText").remove();
           let pag = document.getElementById("paperSizes");
           setPaperSize(pag);
-
-          //const hide = document.getElementById("welcomeText");
-          //console.log(hide);
-          //hide.style = "Display: none;";
         }
       }
     };  // end of hideWelcomeText
@@ -488,8 +500,15 @@
       document.getElementById("cantPags").innerText = cant;
     } // end of calcPages
     
+    function errorFunction(messageToShow) {
+      document.getElementById("errorBox").classList.add("displayOn");
+      document.getElementById("errorBox").innerText = messageToShow;
+    }
+    
+    
     function PrintDiv() {
       if (!arrayOfImages.length ) {
+        errorFunction('Nada para imprimir');
         return;
       }
       //document.body.removeChild(frame1);
@@ -497,6 +516,7 @@
       let Ts =  unitSize;
       unitSize = "mm";
       DisplayPageToPrint(startFrom, imgPorPages, "imgToPrint");
+      //DisplayPageToPrint(startFrom, arrayOfImages.length, "imgToPrint");
       let contents = document.getElementById("imgToPrint").innerHTML;
       
       let frame1 = document.createElement('iframe');
@@ -508,21 +528,8 @@
       //lots of shiet here, it should be simplify
       let styles001 = 'style=\" width: 98%; height: 98%; ';
       let styles002 = "";
-      let bodyStyle = 'style=\"display: flex; position: relative; margin: 0; padding: 0;\"'; //justify-content: center; align-content: center;\"';
-      
-      if (secundaryClass == "testGrid") {
-        //styles002 = ' .gridClassCustom \{ position: absolute;  \}';
-      } 
-      if (imgPorPages == 1 || secundaryClass == "") {
-        //styles002 = ' .grid \{ display: flex; \} '; // justify-content: center; align-items: center; \} .pagePic \{ position: relative;\}';
-        //styles001 += ' align-items: center; ';
-      } else if (imgPorPages >= 2 && imgPorPages < 9) {
-        //styles002 = ' .gridClassCustom \{ position: absolute;  display: flex; \}'; //justify-content: center; align-items: center; \}';
-      }
-      //console.log("st01: " + styles001);
-      //styles002 += ' .borde \{border:' + borderColor + ';\}';
-      //styles002 += ' .cir \{border-radius: 50%; overflow: hidden;\}';
-      
+      let bodyStyle = 'style=\"display: flex; position: relative; margin: 0; padding: 0;\"'; 
+
       const page = document.getElementById("DragAndDrop");
       
       let cantW = page.style.width.match(/\d+/);
@@ -540,7 +547,7 @@
       frameDoc.document.write('</head><body width=\"' + cantW + 'mm\" height=\"' + cantH + 'mm\" ' + bodyStyle + ' >');
       frameDoc.document.write('<div class=\"grid\" ' + styles001 + '\"  >');
       frameDoc.document.write(contents);
-      frameDoc.document.write('</div><style>' + styles002 + ' .pagePic \{ position: absolute; display: flex; align-items: center; justify-content: center;\} .cir \{border-radius: 50%; overflow: hidden;\} .borde \{border:' + borderColor + ';\} </style>');
+      frameDoc.document.write('</div><style>' + styles002 + ' .pagePic \{ position: absolute; display: flex; align-items: center; justify-content: center; overflow: hidden;\}  </style>');
       frameDoc.document.write('</body></html>');
       frameDoc.document.close();
       setTimeout(function () {
@@ -560,9 +567,6 @@
       
     } // end of function PrintDiv
     
-    
-    
-    
     function removeFrames() { 
       if (reloadPage == true && window.frames.length > 0) {
           document.getElementById("remove").remove();
@@ -571,10 +575,12 @@
       } else {
         reloadPage = true;
       }
-    }
-
+    };
     
     function moveFck() {
+      if (!arrayOfImages.length ) {
+        return;
+      }
       //console.log("startFrom: " + startFrom);
       let btn = this;
       let stopMF = arrayOfImages.length;
@@ -659,7 +665,6 @@
       }
     });
     
-    
     function Rotation() {
       let rot = 90;
       if (rot > 359 || rot < 1) {
@@ -724,6 +729,9 @@
         } else if (e.value == "Carta") {
           stl = "width: 215px; height: 279px; ";
         }
+        if (page.classList.contains("zoomEfect")) {
+          setZoom();
+        }
         page.classList.remove("box");
         page.style = stl;
         
@@ -754,19 +762,23 @@
       });
     } //end of function setStretch
     
-    function setCirculo() {
+    function setCirculo(val) {
+      if (!arrayOfImages.length) {
+        return;
+      }
+      if (val != 2 && document.querySelector(".circlePorcentage").classList.contains("displayOn") ) {
+        document.querySelector(".circlePorcentage").classList.remove("displayOn");
+      } else {
+        document.querySelector(".circlePorcentage").classList.add("displayOn");
+      }
+      const bc = document.querySelector(':root');
+      let porc = document.getElementById("sliderC").value;
       document.querySelectorAll(".pagePic").forEach(e => {
-        if (e.classList.contains("cir")) {
-          e.classList.remove("cir");
-          arrayOfImages2[(e.id)][2] = false;
-          //circleOn = false;
-        } else {
-          e.classList.add("cir");
-          arrayOfImages2[(e.id)][2] = true;
-          //circleOn = true;
-        }
+          arrayOfImages2[(e.id)][2] = porc;
+          document.getElementById("circlePorcText").innerText = porc + "%: ";
       });
-    }
+      DisplayPageToPrint(startFrom, imgPorPages, '');
+    } // End of function setCirculo
     
     function setBorder(val) {
       if (val == 0 || val == 2 ) {
@@ -784,7 +796,11 @@
         document.getElementById("targetColor").innerText = borderColor;
         
         document.querySelectorAll(".pagePic").forEach(e => {
-          arrayOfImages2[e.id][4] = borderColor;
+          arrayOfImages2[e.id][4] = S;
+          //arrayOfImages2[e.id][5] = 'solid';
+          arrayOfImages2[e.id][6] = R;
+          arrayOfImages2[e.id][7] = G;
+          arrayOfImages2[e.id][8] = B;
           e.classList.add('borde');
         });
         if (val == 2) {
@@ -796,11 +812,18 @@
     } // end of function setBorder
     
     function showBdrCtr() {
+      if (!arrayOfImages.length) {
+        return;
+      }
       setBorder(0);
       if (document.querySelector(".colorPickers").classList.contains("displayOn")) {
         document.querySelectorAll(".pagePic").forEach(e => {
-          if (arrayOfImages2[e.id][4].length > 5) {
+          if (arrayOfImages2[e.id][4].length > 0) {
             arrayOfImages2[e.id][4] = "";
+            //arrayOfImages2[e.id][5] = "";
+            arrayOfImages2[e.id][6] = "";
+            arrayOfImages2[e.id][7] = "";
+            arrayOfImages2[e.id][8] = "";
             e.classList.remove("borde");
           }
         });
@@ -833,7 +856,7 @@
         spaceBetweenW = Math.floor( ( cantW - (cImgs  * gralWidth) ) / (cImgs + 1)); // espacio sobrante entre imgs
         if (spaceBetweenW <= 0) {
           disminuir++;
-          spaceBetweenW = 1;
+          spaceBetweenW = 2;
         }
         end = (spaceBetweenW * cImgs ) + ( gralWidth * cImgs );
         if (end < cantW) {
@@ -861,7 +884,7 @@
         spaceBetweenH = Math.floor( ( cantH - (cImgs  * gralHeight) ) / (cImgs + 1)); // espacio sobrante entre imgs
         if (spaceBetweenH <= 0) {
           disminuir++;
-          spaceBetweenH = 1;
+          spaceBetweenH = 2;
         }
         end = (spaceBetweenH * cImgs ) + ( gralHeight * cImgs );
         
@@ -922,12 +945,15 @@
     } // end of  function setZoom
     
     function switchLang(lang, btn) {
+    
       let i = document.getElementById("languageSelector");
-      if (this.id == "DisplayNoneBtn" && i.classList.contains("displayOn") ){
+      if (lang == "cerrar") {
         i.classList.remove("displayOn");
         return;
       } else {
-        if (!btn ) {
+        if (this.id == "switchLangBtn"  && i.classList.contains("displayOn") ){
+          i.classList.remove("displayOn");
+        } else if (!btn ) {
           i.classList.add("displayOn");
         }
       }
@@ -946,6 +972,7 @@
         wel : "Arrastre y tire aqui sus archivos <p> o <p> Click para seleccionarlos",
         pag1 : "Pagina",
         pag2 : "de",
+        cct : "Cantidad de copias :",
         print : "Imprimir",
         zoom1 : "Acercar",
         zoom2 : "Alejar",
@@ -965,27 +992,22 @@
         wel : "Drag and Drop your files here <p> or <p> Click to upload",
         pag1 : "Page",
         pag2 : "of",
+        cct : "Amount of copies :", 
         print : "Print",
         zoom1 : "Zoom In",
         zoom2 : "Zoom Out",
         pic : "Picture Size"
       };
       //console.log(esp);
+      
       if (lang == "esp") {
         currentLang = esp;
       } else if (lang == "eng") {
         currentLang = eng;
-      } else {
+      } else  {
         return;
       }
-      /*
-      console.log( lang );
-      if (lang != "esp" && lang != "eng") {
-        lang = "esp";
-      } 
-      console.log(currentLang);
-      document.getElementById("").innerText = "";
-      */
+      
       if ((currentLang) && (!btn)) {
         document.getElementById("mainTitle").innerText = currentLang.title;
         document.getElementById("switchLangBtn").innerText = currentLang.lang;
@@ -1002,6 +1024,7 @@
         document.getElementById("btn1").innerText = currentLang.pag1;
         document.getElementById("pagt01").innerText = currentLang.pag1;
         document.getElementById("pagt02").innerText = currentLang.pag2;
+        document.getElementById("cantCT").innerText = currentLang.cct;
         document.getElementById("printBtn").innerText = currentLang.print;
         document.getElementById("zoomBtn").innerText = currentLang.zoom1;
         document.getElementById("picSize").innerText = currentLang.pic;
@@ -1012,25 +1035,9 @@
         document.getElementById("zoomBtn").innerText = currentLang.zoom2;
       }
       currentLang = currentLang.cLang;
-      //console.log(currentLang);
-      //displayOn
-      /*let currentLang = document.getElementById("switchLangBtn").innerText;
-      //console.log("currentLang: " + currentLang);
-      let Divs = document.querySelectorAll('div').forEach(e => {
-        if (e.id && e.innerText ){
-          console.log(e.id + ', innerText: ' + e.innerText);
-        }
-      });*/
-      
-      
     } // End of function switchLang
     
-    function hideLan() {
-      const i = document.getElementById("languageSelector");
-      if (i.classList.contains("displayOn")) {
-        i.classList.remove("displayOn");
-      }
-    } // end of hideLan
+
     
     function switchMode() {
       //pressMode
@@ -1058,7 +1065,10 @@
   
     } // End of function switchMode
     
-    function goLorR (dir) {      
+    function goLorR (dir) {
+      if (!arrayOfImages.length) {
+        return;
+      }
       let dirX = 0;
       if (dir == "L") {
         dirX = 1;
@@ -1081,8 +1091,65 @@
       }
     }
     
-  </script>
+    function hideMe(e) {
+      //console.log(e);
+      e.classList.remove("displayOn");
+    }
     
+    
+    function setCopias(d) {
+      if (!arrayOfImages.length) {
+        return;
+      };
+      let cantidad = d.value;
+      if ( cantidad > 0 && cantidad < 100) {
+        for (let n = 0 ; n < arrayOfImages.length; n++) {
+          arrayOfImages2[n][9] = cantidad;
+        };
+        document.querySelectorAll(".pagePic").forEach( e => {
+          //arrayOfImages2[e.id][9] = Number(cantidad);
+          //console.log("e.id: " + e.id + ", " + arrayOfImages2[e.id][9]);
+        });
+      }
+      DisplayPageToPrint(startFrom, imgPorPages, '');
+      //console.log("cantidad: " + cantidad);
+    } // Enf of function setCopias
+    
+    
+    // Register an event listener for the "wheel" event
+    let i = 0;
+    document.addEventListener('wheel', function(event) {
+      if (!document.getElementById("errorBox").classList.contains('displayOn')){
+        //document.getElementById("errorBox").classList.add('displayOn');
+      } 
+      const delta = event.deltaY;
+      if (delta > 0) {
+        // The wheel was rotated upwards or away from the user
+        i = i + 1;
+        } else if (delta < 0) {
+        // The wheel was rotated downwards or towards the user
+        i = i - 1;
+      }
+      
+      //document.getElementById("errorBox").innerHTML = 'i: ' + i;
+      if (arrayOfImages.length) {
+       if (i >= 3 ) {
+          startFrom = startFrom + 1;
+          imgPorPages = imgPorPages + 1;
+          DisplayPageToPrint(startFrom, imgPorPages, '');
+          i = 0;
+        };
+        if ( i <= (-3) ) {
+          startFrom = startFrom - 1;
+          imgPorPages = imgPorPages - 1;
+          DisplayPageToPrint(startFrom, imgPorPages, '');
+          i = 0;
+        };
+      }
+    }); // end of mouse wheel listener
+    
+    
+  </script>
 
   <style>
    :root {
@@ -1119,6 +1186,9 @@
   h2 {
     position: absolute;
     top: 1vh;
+  }
+  ul {
+    list-style: none;
   }
   
   .box {
@@ -1297,6 +1367,10 @@
     overflow: hidden;
   }
   
+  .refImg {
+    cursor: pointer;
+  }
+  
   .gridClass3x3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -1332,9 +1406,13 @@
   .inpTxt {
     position: relative;
     height: 25px;
-    width: 40px;
+    width: 35%;
     font-weight: 400;
     text-align: center;
+  }
+  
+  .cantCopias {
+    width: 50px;
   }
   
   .testGrid {
@@ -1350,18 +1428,22 @@
 
   }
 
-  .colorPickers {
+  .sliderMenu {
     display: none;
     position: absolute;
     width: 250px;
     height: 120px;
     left: 0%;
-    top: 70px;
+    top: 90px;
     margin: 0px;
     padding: 0px;
     align-items: center;
 
     z-index: 10;
+  }
+  
+  .circlePorcentage {
+    top: 220px;
   }
   
   .slider{
@@ -1373,18 +1455,10 @@
   
   .languageSelector {
     display: none;
-    position: relative;
-    width: 15%;
-    height: 120px;
-    left: -13%;
-    top: 80px;
-    background: var(--clrbtn);
+    position: absolute;
+    left: 20%;
+    top: 100%;
     z-index: 10;
-    
-  }
-  
-  .displayOn {
-    display: flex;
   }
   
   .goL, .goR {
@@ -1398,7 +1472,6 @@
   .goL:hover, .goR:hover {
     width: 40px;
     opacity: 0.7;
-    
   }
   
   .goL {
@@ -1410,6 +1483,19 @@
     
   }
   
+  .errorBox {
+    display: none;
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    left: 20%;
+    top: 20%;
+    z-index: 20; 
+  }
+  
+  .displayOn {
+    display: flex;
+  }
   </style>
 </body>
 </html>
